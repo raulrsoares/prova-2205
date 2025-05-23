@@ -1,0 +1,70 @@
+1. Como foi feita a integração com a API do ViaCEP?
+A integração com a API do ViaCEP seria implementada no arquivo js/voluntarios-cadastro.js.
+
+- Seleção dos Elementos: No início do script, os elementos HTML para o campo de CEP (cepInput) e o campo de endereço (enderecoInput) são selecionados pelo seu id.
+- Detecção de Foco Perdido (Evento blur): Um event listener foi adicionado ao campo cepInput para o evento blur. Isso significa que a função de busca de CEP é acionada quando o usuário sai do campo de CEP (ou seja, perde o foco).
+- Limpeza e Validação Básica do CEP:
+    Dentro do event listener, o valor do cepInput é obtido e todos os caracteres não numéricos são removidos usando replace(/\D/g, "").
+    Uma validação básica verifica se o CEP tem exatamente 8 dígitos após a limpeza (if (cep.length === 8)).
+- Requisição Workspace à API do ViaCEP:
+    Se o CEP for válido, uma requisição assíncrona (await fetch()) é feita para a URL da API do ViaCEP: https://viacep.com.br/ws/${cep}/json/.
+    A resposta da API é então convertida para JSON usando await response.json().
+- Processamento da Resposta e Preenchimento do Endereço:
+    Tratamento de Erro de CEP: A API do ViaCEP retorna um objeto com a propriedade erro: true se o CEP não for encontrado. O código verifica essa propriedade (if (data.erro)). Se for true, um alert é exibido informando "CEP não encontrado." e o campo de endereço é limpo.
+    Preenchimento de Endereço: Se data.erro for false (CEP válido), o campo enderecoInput.value é preenchido dinamicamente concatenando os valores de logradouro, bairro, localidade e uf retornados pela API: ${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}.
+- Tratamento de Erros de Requisição: Um bloco try...catch envolve a requisição Workspace para capturar possíveis erros de rede ou outros problemas na comunicação com a API, exibindo um alert genérico "Erro ao buscar o CEP." se ocorrer uma exceção.
+
+2. Como a imagem aleatória foi gerada?
+A imagem aleatória para a foto de perfil de cada voluntário foi gerada utilizando uma API de serviço de avatares.
+No projeto, foi utilizada a UI Avatars API por ser leve e não exigir chave de API, mas a alternativa inicial 
+considerada era a Unsplash API, porem nao conseguimos criar a conta para poder fazer a criação da chave de api alem do site da api
+não estar funcionado.
+
+3. Como você utilizou o LocalStorage?
+O localStorage foi utilizado como o principal meio de persistência de dados no navegador, 
+garantindo que as informações dos voluntários não sejam perdidas ao fechar ou recarregar a página, assim podendo fazer:
+- Armazenamento de Dados
+- Recuperação de Dados
+- Exclusão de Dados
+
+4. Como você organizou os cards na tela?
+A organização dos cards na tela foi feita utilizando Flexbox no CSS, em conjunto com a estrutura HTML.
+
+5. Como foi implementado o sistema de login e controle de acesso?
+Foi utilizado login onde os dados a serem validados para autenticação estão salvos em um local storge
+
+6. Como foi feito o controle de e-mail duplicado?
+O controle de e-mail duplicado foi implementado na página de cadastro de voluntários, 
+utilizando o método some() para verificar a existência do e-mail no localStorage antes de adicionar um novo cliente.
+
+7. Como foi implementado o redirecionamento após 5 minutos de inatividade?
+
+O redirecionamento após 5 minutos de inatividade foi implementado através do arquivo `controleSessao.js`, que opera de forma autônoma para monitorar a interação do usuário e redirecionar a página em caso de inatividade prolongada.
+
+A implementação funciona da seguinte maneira:
+
+-Definição do Tempo de Inatividade:
+    Uma constante `tempoInatividade` é definida com o valor de `5 * 60 * 1000`, que corresponde a 5 minutos (5 minutos * 60 segundos/minuto * 1000 milissegundos/segundo).
+    Uma variável `temporizadorInatividade` é declarada para armazenar o ID do `setTimeout` em execução.
+
+-Função de Redirecionamento:
+    A função `redirecionarParaLogin()` é responsável por mudar a URL da página para "index.html" (`window.location.href = "index.html";`). Este é o destino para onde o usuário será enviado após a inatividade.
+
+-Função de Reset do Temporizador:
+    A função `resetarTemporizador()` é o coração do controle de inatividade.
+    Ela primeiro limpa qualquer temporizador de inatividade existente (`clearTimeout(temporizadorInatividade)`), garantindo que apenas um timer esteja ativo por vez.
+    Em seguida, ela inicia um novo `setTimeout` (`temporizadorInatividade = setTimeout(...)`) que chamará a função `redirecionarParaLogin` após o `tempoInatividade` definido.
+
+-Início e Monitoramento da Inatividade:
+    `resetarTemporizador();` é chamado uma vez logo no início para iniciar o temporizador assim que o script é carregado.
+    Um array de eventos de interação do usuário (`["click", "mousemove", "keydown", "scroll", "resize"]`) é percorrido.
+    Para cada um desses eventos, um `event listener` é adicionado ao `document` (`document.addEventListener(evento, resetarTemporizador, false);`). Isso significa que qualquer clique, movimento do mouse, tecla pressionada, rolagem de página ou redimensionamento da janela resetará o temporizador de inatividade.
+
+-Mecanismo: Enquanto o usuário estiver interagindo com a página, o temporizador será continuamente reiniciado. Se o usuário parar de interagir por 5 minutos consecutivos, o `setTimeout` finalmente completará seu ciclo e executará a função `redirecionarParaLogin`, levando o usuário de volta para a página inicial (assumida como a página de login neste contexto, ou uma página inicial padrão).
+
+8. O que você faria diferente se fosse um projeto real?
+Fariamos a utilização das seguintes ferramentas:
+- Backend e Banco de Dados
+- Autenticação e Autorização (Utilizando JWT)
+- Testes (Unitários, de interação e E2E [End-to-End]) 
+- utilização de frameworks para frontend

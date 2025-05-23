@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voluntarios</title>
+    <script src="js/controleSessao.js"></script>
+    <link rel="stylesheet" href="css/voluntarios.css" />
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="voluntarios-cadastro.html">Cadastro de Voluntarios</a></li>
+        <li><a href="#">Lista de Voluntarios</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <h2>Clientes Cadastrados</h2>
+
+      <div class="search-and-clear-container">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Pesquisar por nome ou email..."
+        />
+        <button id="clearAllBtn" class="clear-all-btn">Limpar Todos</button>
+      </div>
+
+      <div id="flashcardsContainer" class="flashcards-container"></div>
+    </div>
+
+    <script src="js/voluntarios.js"></script>
+  </body>
+</html>
